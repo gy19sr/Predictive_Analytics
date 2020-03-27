@@ -67,7 +67,7 @@ print(data.isnull().sum())
 
 ################## Converting Categorical variables to numbers ############################
 
-####label encoding - two distinct values (so binomial)
+####label encoding - two distinct values (so binomial) Yes and No
 
 #id the variables
 sex = data.iloc[:,1:2].values
