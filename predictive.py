@@ -2,7 +2,7 @@
 """
 Spyder Editor
 
-This is a temporary script file.
+author Stuart Ross
 """
 import os
 import keras
@@ -99,7 +99,35 @@ print(sex[:10])
 #new columns for each option 1 is present 0 is not
 
 region = data.iloc[:,5:6].values
+#one hot encoder
+ohe = OneHotEncoder()
+#create ndarray for one hot encoding (sklearn)
+region = ohe.fit_transform(region).toarray()
 
+region = pd.DataFrame(region)
+
+region.columns = ['northeast', 'northwest', 'southeast', 'southwest' ]
+print("sklearn one hot encoder results for region")
+print(region[:10])
+
+#####divide test and train###########
+
+#take numerical data from the original data
+x_num = data[['age', 'bmi', 'children']]
+#take encoded and add numerical
+x_final = pd.concat([x_num, sex, smoker, region], axis = 1)
+
+#define y as being the "charges column" from the original dataset
+y_final = data[['charges']].copy()
+#test and train split
+x_train, x_test, y_train, y_test = train_test_split(x_final, y_final, test_size = 0.33, random_state = 0)
+
+
+
+#####feature scaling#########
+##these are data normalization and data standardization
+
+##normalization (min max scalling)---   (x - min(x))/[max(x)-min(x)]   ---- better with no outliers
 
 
 
