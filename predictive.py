@@ -14,6 +14,8 @@ import matplotlib.pyplot as plt
 import csv
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 
 #import data
 data = pd.read_csv("C:/Users/stuar/OneDrive/Documents/onlinecourses/Linkedin/predictive_analytics_through_python/Predictive_Analytics/Ex_Files_Python_Predictive_Analytics/Ex_Files_Python_Predictive_Analytics/Exercise Files/Datasets/insurance.csv")
@@ -128,7 +130,15 @@ x_train, x_test, y_train, y_test = train_test_split(x_final, y_final, test_size 
 ##these are data normalization and data standardization
 
 ##normalization (min max scalling)---   (x - min(x))/[max(x)-min(x)]   ---- better with no outliers
+#will range from 0 to 1 
+#n_scaler = MinMaxScaler()
+#x_train = n_scaler.fit_transform(x_train.astype(np.float))
+#x_test = n_scaler.transform(x_test.astype(np.float))
 
 
+#standard scaler (fit transform on train, fit only on test)
+s_scaler = StandardScaler()
+x_train = s_scaler.fit_transform(x_train.astype(np.float))
+x_test= s_scaler.transform(x_test.astype(np.float))
 
 
