@@ -19,7 +19,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 
-
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 
 #import data
@@ -172,6 +173,62 @@ Supervised (with labeled Data)
  -support vector regression (SVM)
  -Dcesion tree
  -Random forest regression
- 
  """
   
+##### linear regression ###########
+ 
+lr = LinearRegression().fit(x_train, y_train)
+y_train_pred = lr.predict(x_train)
+y_test_predict = lr.predict(x_test)
+
+print("lr.coef_: {}".format(lr.coef_))
+print("lr.intercept_: {}".format(lr.intercept_))
+print('lr train score %.3f, lr test score: Z%.3f' % (
+lr.score(x_train, y_train),
+lr.score(x_test, y_test)))
+
+#test score about 78%
+
+
+
+######## Polynomical Regression #########
+#linear model to address non linear data
+
+poly = PolynomialFeatures (degree = 2)
+x_poly = poly.fit_transform(x_final)
+
+x_train,x_test,y_train,y_test = train_test_split(x_poly,y_final, test_size = 0.33, random_state = 0)
+
+#standard scaler (fit transform on train, fit only on test)
+sc = StandardScaler()
+x_train = sc.fit_transform(x_train.astype(np.float))
+x_test= sc.transform(x_test.astype(np.float))
+
+#fit model
+poly_lr = LinearRegression().fit(x_train,y_train)
+
+y_train_pred = poly_lr.predict(x_train)
+y_test_pred = poly_lr.predict(x_test)
+
+#print score
+print('poly train score %.3f, poly test score: %.3f' % (
+poly_lr.score(x_train,y_train),
+poly_lr.score(x_test, y_test)))
+#about 87% poly test score
+#degree is the key affects under or over fitting
+
+
+
+
+######## Support Vector Classification #########
+#SVR similar to SVC
+#output is a continuous number rather than a category
+#Goal is to minimize error and obtain a minimum margin interval
+#which contains the maximum number of data points
+
+#commonly used kernel functions include: Linear, RBF (radial basis function), Polynomial, Exponential
+
+
+
+
+
