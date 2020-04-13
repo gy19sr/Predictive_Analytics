@@ -21,7 +21,12 @@ from sklearn.preprocessing import StandardScaler
 
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.svm import SVR
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 
+
+from sklearn.metrics import r2_score
 
 #import data
 data = pd.read_csv("C:/Users/stuar/OneDrive/Documents/onlinecourses/Linkedin/predictive_analytics_through_python/Predictive_Analytics/Ex_Files_Python_Predictive_Analytics/Ex_Files_Python_Predictive_Analytics/Exercise Files/Datasets/insurance.csv")
@@ -228,7 +233,81 @@ poly_lr.score(x_test, y_test)))
 
 #commonly used kernel functions include: Linear, RBF (radial basis function), Polynomial, Exponential
 
+svr = SVR(kernel='linear', C = 300)
+
+#test train split
+X_train, X_test, y_train, y_test = train_test_split(x_final, y_final, test_size = 0.33, random_state = 0 )
+
+#standard scaler (fit transform on train, fit only on test) #essential to scale with this method as sensitive to outliers
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float))
+X_test= sc.transform(X_test.astype(np.float))
+
+#fit model
+svr = svr.fit(X_train,y_train.values.ravel())
+y_train_pred = svr.predict(X_train)
+y_test_pred = svr.predict(X_test)
+
+#print score
+print('svr train score %.3f, svr test score: %.3f' % (
+svr.score(X_train,y_train),
+svr.score(X_test, y_test)))
+#test score 63%
+
+
+############# Decision Tree ######################
+
+dt = DecisionTreeRegressor(random_state=0)
+
+#test train split
+X_train, X_test, y_train, y_test = train_test_split(x_final, y_final, test_size = 0.33, random_state = 0 )
+
+#standard scaler (fit transform on train, fit only on test)
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float))
+X_test= sc.transform(X_test.astype(np.float))
+
+
+#fit model
+dt = dt.fit(X_train,y_train.values.ravel())
+y_train_pred = dt.predict(X_train)
+y_test_pred = dt.predict(X_test)
+
+#print score
+print('dt train score %.3f, dt test score: %.3f' % (
+dt.score(X_train,y_train),
+dt.score(X_test, y_test)))
+#71%
+#99 % for train so overfit for trained not generalized for prediction then too specific
 
 
 
+############# Random Forest ######################
+# --Regression tree = Output: number -- predicted calculated from mean
+# --Regression tree = Output: category -- predicted calculated from mode
 
+#does not require scaling
+
+forest = RandomForestRegressor(n_estimators = 100,
+                              criterion = 'mse',
+                              random_state = 1,
+                              n_jobs = -1)
+#test train split
+X_train, X_test, y_train, y_test = train_test_split(x_final, y_final, test_size = 0.33, random_state = 0 )
+
+#standard scaler (fit transform on train, fit only on test)
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float))
+X_test= sc.transform(X_test.astype(np.float))
+
+#fit model
+forest.fit(X_train,y_train.values.ravel())
+y_train_pred = forest.predict(X_train)
+y_test_pred = forest.predict(X_test)
+
+#print score
+print('forest train score %.3f, forest test score: %.3f' % (
+forest.score(X_train,y_train),
+forest.score(X_test, y_test)))
+#much higher test score of 86%
+#with reduced overfitting
