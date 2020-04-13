@@ -11,6 +11,7 @@ import numpy as np
 import seaborn as sns
 #Seaborn library for data visulaisation (look in folders)
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
 import csv
@@ -311,3 +312,90 @@ forest.score(X_train,y_train),
 forest.score(X_test, y_test)))
 #much higher test score of 86%
 #with reduced overfitting
+
+################################# Tuning and parameters ##########################################
+
+
+
+#Function to print best hyperparamaters: 
+def print_best_params(gd_model):
+    param_dict = gd_model.best_estimator_.get_params()
+    model_str = str(gd_model.estimator).split('(')[0]
+    print("\n*** {} Best Parameters ***".format(model_str))
+    for k in param_dict:
+        print("{}: {}".format(k, param_dict[k]))
+    print()
+
+#test train split
+X_train, X_test, y_train, y_test = train_test_split(x_final, y_final, test_size = 0.33, random_state = 0 )
+
+#standard scaler (fit transform on train, fit only on test)
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train.astype(np.float))
+X_test= sc.transform(X_test.astype(np.float))
+
+###Challenge 1: SVR parameter grid###
+param_grid_svr = dict(kernel=[ 'linear', 'poly'],
+                     degree=[2],
+                     C=[600, 700, 800, 900],
+                     epsilon=[0.0001, 0.00001, 0.000001])
+svr = GridSearchCV(SVR(), param_grid=param_grid_svr, cv=5, verbose=3)
+
+
+#fit model
+svr = svr.fit(X_train,y_train.values.ravel())
+
+#print score
+print('\n\nsvr train score %.3f, svr test score: %.3f' % (
+svr.score(X_train,y_train),
+svr.score(X_test, y_test)))
+#print(svr.best_estimator_.get_params())
+
+print_best_params(svr)
+
+
+###Challenge 2:Decision Tree parameter grid###
+param_grid_dt = dict(min_samples_leaf=np.arange(9, 13, 1, int), #start, stop, step, type
+                  max_depth = np.arange(4,7,1, int),
+                  min_impurity_decrease = [0, 1, 2],
+                 )
+
+dt = GridSearchCV(DecisionTreeRegressor(random_state=0), param_grid=param_grid_dt, cv=5,  verbose=3)
+
+
+
+#fit model
+dt = dt.fit(X_train,y_train.values.ravel())
+
+
+#print score
+print('\n\ndt train score %.3f, dt test score: %.3f' % (
+dt.score(X_train,y_train),
+dt.score(X_test, y_test)))
+print_best_params(dt)
+
+
+
+###Challenge 3:Random Forest parameter grid###
+param_grid_rf = dict(n_estimators=[20],
+                     max_depth=np.arange(1, 13, 2),
+                     min_samples_split=[2],
+                     min_samples_leaf= np.arange(1, 15, 2, int),
+                     bootstrap=[True, False],
+                     oob_score=[False, ])
+
+
+forest = GridSearchCV(RandomForestRegressor(random_state=0), param_grid=param_grid_rf, cv=5, verbose=3)
+
+#fit model
+forest.fit(X_train,y_train.values.ravel())
+
+
+#print score
+print('\n\nforest train score %.3f, forest test score: %.3f' % (
+forest.score(X_train,y_train),
+forest.score(X_test, y_test)))
+
+print_best_params(forest)
+
+
