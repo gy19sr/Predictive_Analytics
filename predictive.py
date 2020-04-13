@@ -8,6 +8,8 @@ import os
 import keras
 import pandas as pd
 import numpy as np
+import seaborn as sns
+#Seaborn library for data visulaisation (look in folders)
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 import matplotlib.pyplot as plt
@@ -16,6 +18,9 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
+
+
+
 
 #import data
 data = pd.read_csv("C:/Users/stuar/OneDrive/Documents/onlinecourses/Linkedin/predictive_analytics_through_python/Predictive_Analytics/Ex_Files_Python_Predictive_Analytics/Ex_Files_Python_Predictive_Analytics/Exercise Files/Datasets/insurance.csv")
@@ -112,7 +117,7 @@ region.columns = ['northeast', 'northwest', 'southeast', 'southwest' ]
 print("sklearn one hot encoder results for region")
 print(region[:10])
 
-#####divide test and train###########
+############### divide test and train ####################
 
 #take numerical data from the original data
 x_num = data[['age', 'bmi', 'children']]
@@ -137,8 +142,36 @@ x_train, x_test, y_train, y_test = train_test_split(x_final, y_final, test_size 
 
 
 #standard scaler (fit transform on train, fit only on test)
+#z = (x - mean)/ SD
 s_scaler = StandardScaler()
 x_train = s_scaler.fit_transform(x_train.astype(np.float))
-x_test= s_scaler.transform(x_test.astype(np.float))
+x_test= s_scaler.transform(x_test.astype(np.float)) #don't need to fit test
 
 
+############## End of data Preperation ###############
+
+
+############## Model #############################
+"""
+##### Types of Machine Learning ##########
+Supervised (with labeled Data)
+ --- regression (predicts a numerical variable)
+ --- Classification (Predicts a categorical variable)
+ 
+ Unsupervised (Without Labeled) 
+ --- Clustering (Discover the inherent grouping in the data)
+ --- Association (discover rules that describe portions of the data)
+ 
+ Reinforcement Learning
+(personal fav)
+
+ 
+ #####Commonly used regression models#####
+ -linear regression
+ -polynomial regression
+ -support vector regression (SVM)
+ -Dcesion tree
+ -Random forest regression
+ 
+ """
+  
